@@ -8,18 +8,21 @@ public class Playerspeed : MonoBehaviour
     public LayerMask groundLayer; //chọn những vật nào mình muốn tương tác
     public Transform groundCheck; //kiểm tra dưới chân nhân vật
     private bool isGrounded; //kiểm tra nhân vật có chạm đất hay không
+    private Animator animator;
 
-    // Start is called before the first frame update
+    // Tham chiếu đến thành phần Animator và Rigidbody2D
     void Start()
     {
+        animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
     }
 
-    // Update is called once per frame
+    // Truyền dữ liệu vào game
     void Update()
     {
         nhanvatdichuyen();
         nhanvatnhay();
+        Animation();
     }
 
     private void nhanvatdichuyen()
@@ -45,5 +48,13 @@ public class Playerspeed : MonoBehaviour
         }
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer); //over...: vẽ vòng tròn quanh điểm groundcheck, 0.2f: bán kính vòng tròn
     }
-}
 
+    //hàm animation
+    private void Animation()
+    {
+        bool isRunning = Mathf.Abs(rb.velocity.x) > 0.1f; //lấy giá trị tuyệt đối vận tốc x và nếu lớn hơn 0.1f thì nhân vật đang chạy
+        bool isJumping = !isGrounded; // nếu không chạm đất thì nhân vật đang nhảy
+        animator.SetBool("run", isRunning);
+        animator.SetBool("jump", isJumping);
+    }
+}
